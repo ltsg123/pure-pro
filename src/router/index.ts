@@ -13,6 +13,11 @@ const routes: Array<RouteConfig> = [
     path: '/home',
     name: 'Home',
     component: () => import('@/views/Home.vue')
+  },
+  {
+    path: '/video',
+    name: 'Video',
+    component: () => import('@/views/Functions/Video.vue')
   }
 ];
 
