@@ -42,20 +42,36 @@ export default class extends Vue {
     this.videoType = '';
   }
 
+  // vue源码缓存函数
+  private cached(fn: Function) {
+    const cachedFn = Object.create(null);
+
+    return function cache(str: string) {
+      const hit = cachedFn[str];
+
+      return hit || (cachedFn[str] = fn(str));
+    };
+  }
+
+  private getVideoType(url: string) {
+    if (url) {
+      const type = url.slice(url.lastIndexOf('.') + 1);
+      const urlHead = url.slice(0, 4);
+      if (urlHead === 'http' && type !== 'm3u8') {
+        this.isFlvopen = true;
+        this.videoType = 'flv.js';
+      } else {
+        this.isVideoopen = true;
+        this.videoType = 'video.js';
+      }
+    }
+  }
+
   private open() {
     this.close();
     this.$nextTick(() => {
-      if (this.url) {
-        const type = this.url.slice(this.url.lastIndexOf('.') + 1);
-        const urlHead = this.url.slice(0, 4);
-        if (urlHead === 'http' && type !== 'm3u8') {
-          this.isFlvopen = true;
-          this.videoType = 'flv.js';
-        } else {
-          this.isVideoopen = true;
-          this.videoType = 'video.js';
-        }
-      }
+      const cacheGetVideoType = this.cached(this.getVideoType);
+      cacheGetVideoType(this.url);
     });
   }
 
