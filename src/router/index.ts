@@ -18,6 +18,11 @@ const routes: Array<RouteConfig> = [
     path: '/video',
     name: 'Video',
     component: () => import('@/views/Functions/Video.vue')
+  },
+  {
+    path: '/websocket',
+    name: 'Websocket',
+    component: () => import('@/views/Functions/Websocket.vue')
   }
 ];
 
