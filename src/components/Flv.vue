@@ -13,7 +13,7 @@
       style="width:100%;height:100%"
     />
     <div class="close-div">
-      <img class="close-svg" src="/img/layout/关闭.svg" @click="closeVideo" />
+      <img class="close-svg" src="/img/关闭.svg" @click="closeVideo" />
     </div>
   </div>
 </template>
@@ -24,22 +24,26 @@ import flvjs from 'flv.js';
 
 @Component
 export default class extends Vue {
-  @Prop() private data!: { type: string; url: string };
+  @Prop() private url!: string;
   private player!: flvjs.Player;
 
   // AR学校特殊接口
   private async mounted(): Promise<void> {
-    console.log(this.data);
-    if (this.data) {
+    if (this.url) {
+      let type = this.url.slice(this.url.lastIndexOf('.') + 1);
+      if (type !== 'mp4') {
+        // 确定视频流格式，flv.js仅支持flv或者mp4的类型
+        type = 'flv';
+      }
       if (!flvjs.isSupported()) {
         return;
       }
       const video = this.$refs.player as HTMLVideoElement;
       if (video) {
         this.player = flvjs.createPlayer({
-          type: this.data.type,
+          type: type,
           isLive: true,
-          url: this.data.url
+          url: this.url
         });
         this.player.attachMediaElement(video);
         try {
@@ -71,15 +75,6 @@ export default class extends Vue {
 <style lang="scss">
 .video-box {
   position: relative;
-  .camera-name {
-    position: absolute;
-    top: r(10);
-    left: r(20);
-    font-size: r(15);
-    background-image: -webkit-linear-gradient(bottom, #5095fd, #ffffff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
   .close-div {
     position: absolute;
     top: 0;
@@ -96,7 +91,7 @@ export default class extends Vue {
     }
     .close-svg {
       cursor: pointer;
-      width: r(20);
+      width: 25px;
     }
   }
 }
